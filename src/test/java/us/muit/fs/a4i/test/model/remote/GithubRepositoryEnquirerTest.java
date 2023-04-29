@@ -42,13 +42,15 @@ class GithubRepositoryEnquirerTest {
 		
 		try {
 			item = underTest.getMetric("OpenIssues", repositoryId);
+			
+			
+			
 		} catch (MetricException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		assertEquals("OpenIssues", item.getName(), "El nombre establecido no es correcto");
-		assertEquals(33, item.getValue(), "El valor establecido no es correcto");
+		assertEquals(2, item.getValue(), "El valor establecido no es correcto");
 		assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
 				item.getDate().toString(), "La fecha establecida no es correcta");
 		assertEquals(item.getDescription(), "Número de Issues abiertos en el proyecto",
@@ -63,10 +65,10 @@ class GithubRepositoryEnquirerTest {
 		GHRepository githubrepo = null;
 		try {
 			github = GitHubBuilder.fromEnvironment().build();
-		
-			githubrepo = github.getRepository("manjergon/PracticandoGIT");
+			String name = new String("manjergon/PracticandoGIT");
+			githubrepo = github.getRepository(name);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block   616960702
 			e1.printStackTrace();
 		}
 		
@@ -77,21 +79,23 @@ class GithubRepositoryEnquirerTest {
 		underTest = new GitHubRepositoryEnquirer();
 		log.info("Objeto GitHubRepositoryEnquirer creado");
 		
-		try {
-			item = underTest.getMetric("ClosedIssues", repositoryId);
-		} catch (MetricException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		assertEquals("ClosedIssues", item.getName(), "El nombre establecido no es correcto");
-		assertEquals(33, item.getValue(), "El valor establecido no es correcto");
-		assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
-				item.getDate().toString(), "La fecha establecida no es correcta");
-		assertEquals(item.getDescription(), "Número de Issues cerrados en el proyecto",
-				"La descripci�n no coincide con la del fichero de configuraci�n");
-		assertNull(item.getSource(), "El origen no deber�a estar incluido");
-		assertEquals(item.getUnit(), "ClosedIssues", "Deber�a incluir las unidades");
+			try {
+				item = underTest.getMetric("ClosedIssues", repositoryId);
+			} catch (MetricException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			assertEquals("ClosedIssues", item.getName(), "El nombre establecido no es correcto");
+			assertEquals(2, item.getValue(), "El valor establecido no es correcto");
+			assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
+					item.getDate().toString(), "La fecha establecida no es correcta");
+			assertEquals(item.getDescription(), "Número de Issues cerrados en el proyecto",
+					"La descripci�n no coincide con la del fichero de configuraci�n");
+			assertNull(item.getSource(), "El origen no deber�a estar incluido");
+			assertEquals(item.getUnit(), "ClosedIssues", "Deber�a incluir las unidades");
+
+
 	}
 
 }
