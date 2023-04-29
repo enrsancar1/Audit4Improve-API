@@ -38,7 +38,7 @@ public class SupervisorControl {
 			PagedIterable<GHRepository> myOwnRepos = myinfo.listRepositories(10, GHMyself.RepositoryListFilter.OWNER);
 			int count = 1;
 			for (GHRepository repo : myOwnRepos.toList()) {
-				System.out.println("Nombre de mi repositorio número " + count + " " + repo.getFullName());
+				System.out.println("Nombre de mi repositorio número " + count + " " + repo.getFullName() + " con id " + repo.getId());
 				List<GHProject> proyectos = repo.listProjects().toList();
 				int i = 1;
 				for (GHProject project : proyectos) {
