@@ -174,18 +174,22 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 	/**
 	 * Permite consultar desde fuera una métrica del repositorio indicado
 	 */
+	
+	// Manuel Jerez: Cambio el nombre del segundo parametro de repositoryId a repositoryName,
+	// ya que el método getRepository utiliza el nombre, no el id (numérico) del repositorio
 
 	@Override
-	public ReportItem getMetric(String metricName, String repositoryId) throws MetricException {
+	public ReportItem getMetric(String metricName, String repositoryName) throws MetricException {
 		GHRepository remoteRepo;
 
 		GitHub gb = getConnection();
 		try {
-			remoteRepo = gb.getRepositoryById(repositoryId);
+			
+			remoteRepo = gb.getRepository(repositoryName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MetricException(
-					"No se puede acceder al repositorio remoto " + repositoryId + " para recuperarlo");
+					"No se puede acceder al repositorio remoto " + repositoryName + " para recuperarlo");
 		}
 
 		return getMetric(metricName, remoteRepo);

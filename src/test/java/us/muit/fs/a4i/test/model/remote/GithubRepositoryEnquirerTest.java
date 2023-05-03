@@ -22,18 +22,7 @@ class GithubRepositoryEnquirerTest {
 
 	@Test
 	void testOpenIssues() {		
-		GitHub github = null;
-		GHRepository githubrepo = null;
-		try {
-			github = GitHubBuilder.fromEnvironment().build();
 		
-			githubrepo = github.getRepository("manjergon/PracticandoGIT");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		String repositoryId = "" + githubrepo.getId();
 		ReportItem<Integer> item = null;
 		
 		GitHubRepositoryEnquirer underTest = null;
@@ -41,7 +30,7 @@ class GithubRepositoryEnquirerTest {
 		log.info("Objeto GitHubRepositoryEnquirer creado");
 		
 		try {
-			item = underTest.getMetric("OpenIssues", repositoryId);
+			item = underTest.getMetric("OpenIssues", "manjergon/PracticandoGIT");
 			
 			
 			
@@ -61,26 +50,15 @@ class GithubRepositoryEnquirerTest {
 	
 	@Test
 	void testClosedIssues() {
-		GitHub github = null;
-		GHRepository githubrepo = null;
-		try {
-			github = GitHubBuilder.fromEnvironment().build();
-			String name = new String("manjergon/PracticandoGIT");
-			githubrepo = github.getRepository(name);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block   616960702
-			e1.printStackTrace();
-		}
+
 		
-		String repositoryId = "" + githubrepo.getId();
 		ReportItem<Integer> item = null;
-		
 		GitHubRepositoryEnquirer underTest = null;
 		underTest = new GitHubRepositoryEnquirer();
 		log.info("Objeto GitHubRepositoryEnquirer creado");
 		
 			try {
-				item = underTest.getMetric("ClosedIssues", repositoryId);
+				item = underTest.getMetric("ClosedIssues", "manjergon/PracticandoGIT");
 			} catch (MetricException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
