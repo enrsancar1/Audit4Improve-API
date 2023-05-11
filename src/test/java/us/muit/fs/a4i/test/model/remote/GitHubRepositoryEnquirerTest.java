@@ -18,28 +18,24 @@ import us.muit.fs.a4i.model.remote.GitHubRepositoryEnquirer;
 
 class GitHubRepositoryEnquirerTest {
 	
-//Id repositorio = 616960702
-	
 	@Test
 	void testMetricCollaboratorCounts() {
 		GitHubRepositoryEnquirer underTest = new GitHubRepositoryEnquirer();
 		try {
 			
 		GitHub github = GitHubBuilder.fromEnvironment().build();
-		GHRepository repo = github.getRepository("manjergon/PracticandoGIT");
-		String repoId = ""+repo.getId();
 		
 		try {
-		ReportItem<?> newMetric = underTest.getMetric("CollaboratorsCount",repoId);
+		ReportItem<?> newMetric = underTest.getMetric("CollaboratorsCount","enrsancar1/PracticandoGIT");
 		
 		assertEquals("CollaboratorsCount", newMetric.getName(), "El nombre establecido no es correcto");
 		
-		assertEquals(0, newMetric.getValue(), "El valor establecido no es correcto");
+		assertEquals(1, newMetric.getValue(), "El valor establecido no es correcto");
 		
 		assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
 				newMetric.getDate().toString(), "La fecha establecida no es correcta");
 		
-		assertEquals(newMetric.getDescription(), "Colaboradores del proyecto",
+		assertEquals(newMetric.getDescription(), "Número de colaboradores del proyecto",
 				"La descripci�n no coincide con la del fichero de configuraci�n");
 		
 		assertNull(newMetric.getSource(), "El origen no deber�a estar incluido");
@@ -64,20 +60,18 @@ class GitHubRepositoryEnquirerTest {
 		try {
 			
 		GitHub github = GitHubBuilder.fromEnvironment().build();
-		GHRepository repo = github.getRepository("manjergon/PracticandoGIT");
-		String repoId = ""+repo.getId();
-		
+
 		try {
-		ReportItem<?> newMetric = underTest.getMetric("OwnerCommits",repoId);
+		ReportItem<?> newMetric = underTest.getMetric("OwnerCommits","enrsancar1/PracticandoGIT");
 		
 		assertEquals("OwnerCommits", newMetric.getName(), "El nombre establecido no es correcto");
 		
-		assertEquals(3, newMetric.getValue(), "El valor establecido no es correcto");
+		assertEquals(0, newMetric.getValue(), "El valor establecido no es correcto");
 		
 		assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
 				newMetric.getDate().toString(), "La fecha establecida no es correcta");
 		
-		assertEquals(newMetric.getDescription(), "Commits del dueno del repositorio",
+		assertEquals(newMetric.getDescription(), "Número de commits del propietario del repositorio en el último sprint",
 				"La descripci�n no coincide con la del fichero de configuraci�n");
 		
 		assertNull(newMetric.getSource(), "El origen no deber�a estar incluido");
@@ -103,20 +97,18 @@ class GitHubRepositoryEnquirerTest {
 		try {
 			
 		GitHub github = GitHubBuilder.fromEnvironment().build();
-		GHRepository repo = github.getRepository("manjergon/PracticandoGIT");
-		String repoId = ""+repo.getId();
 		
 		try {
-		ReportItem<?> newMetric = underTest.getMetric("AllCommits",repoId);
+		ReportItem<?> newMetric = underTest.getMetric("AllCommits", "enrsancar1/PracticandoGIT");
 		
-		assertEquals("OwnerCommits", newMetric.getName(), "El nombre establecido no es correcto");
+		assertEquals("AllCommits", newMetric.getName(), "El nombre establecido no es correcto");
 		
 		assertEquals(0, newMetric.getValue(), "El valor establecido no es correcto");
 		
 		assertEquals(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)).toString(),
 				newMetric.getDate().toString(), "La fecha establecida no es correcta");
 		
-		assertEquals(newMetric.getDescription(), "Commits totales en el ultimo sprint",
+		assertEquals(newMetric.getDescription(), "Número de commits totales en el último sprint",
 				"La descripci�n no coincide con la del fichero de configuraci�n");
 		
 		assertNull(newMetric.getSource(), "El origen no deber�a estar incluido");

@@ -40,6 +40,24 @@
 			"type": "java.util.Date",
 			"description": "Último push realizado en el repositorio",
 			"unit": "date"
+		},
+		{
+			"name": "CollaboratorsCount",
+			"type": "java.lang.Integer",
+			"description": "Número de colaboradores del proyecto",
+			"unit": "collaborators"
+		},
+		{
+			"name": "AllCommits",
+			"type": "java.lang.Integer",
+			"description": "Número de commits totales en el último sprint",
+			"unit": "collaborators"
+		},
+		{
+			"name": "OwnerCommits",
+			"type": "java.lang.Integer",
+			"description": "Número de commits del propietario del repositorio en el último sprint",
+			"unit": "collaborators"
 		}
 	],
 	"indicators": [{

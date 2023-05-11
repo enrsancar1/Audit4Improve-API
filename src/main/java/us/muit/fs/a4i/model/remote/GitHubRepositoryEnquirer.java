@@ -6,8 +6,10 @@ package us.muit.fs.a4i.model.remote;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.checkerframework.checker.units.qual.Length;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHRepositoryStatistics;
 import org.kohsuke.github.GHRepositoryStatistics.CodeFrequency;
@@ -174,16 +176,16 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 	 */
 
 	@Override
-	public ReportItem getMetric(String metricName, String repositoryId) throws MetricException {
+	public ReportItem getMetric(String metricName, String repositoryName) throws MetricException {
 		GHRepository remoteRepo;
 
 		GitHub gb = getConnection();
 		try {
-			remoteRepo = gb.getRepository(repositoryId);
+			remoteRepo = gb.getRepository(repositoryName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MetricException(
-					"No se puede acceder al repositorio remoto " + repositoryId + " para recuperarlo");
+					"No se puede acceder al repositorio remoto " + repositoryName + " para recuperarlo");
 		}
 
 		return getMetric(metricName, remoteRepo);
@@ -212,6 +214,15 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 			break;
 		case "totalDeletions":
 			metric = getTotalDeletions(remoteRepo);
+			break;
+		case "CollaboratorsCount":
+			metric = getCollaboratorsCount(remoteRepo);
+			break;
+		case "OwnerCommits":
+			metric = getOwnerCommits(remoteRepo);
+			break;
+		case "AllCommits":
+			metric = getAllCommits(remoteRepo);
 			break;
 		default:
 			throw new MetricException("La métrica " + metricName + " no está definida para un repositorio");
@@ -313,6 +324,111 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 		}
 		return metric;
 
+	}
+	
+	/**
+	 * <p>
+	 * Obtención del número de colaboradores del repositorio
+	 * </p>
+	 * 
+	 * @param remoteRepo el repositorio remoto sobre el que consultar
+	 * @return la métrica con el n�mero de colaboradores del repositorio
+	 * @throws MetricException Intenta crear una métrica no definida
+	 */
+	private ReportItem getCollaboratorsCount(GHRepository remoteRepo) throws MetricException {
+		ReportItem metric = null;
+
+		int colaboradores;
+		try {
+			colaboradores = remoteRepo.getCollaborators().size();
+			ReportItemBuilder<Integer> colaboratorsCount;
+			
+			try {
+				colaboratorsCount = new ReportItem.ReportItemBuilder<Integer>("CollaboratorsCount", colaboradores);
+				colaboratorsCount.description("Número de colaboradores del proyecto");
+				colaboratorsCount.unit("collaborators");
+				metric = colaboratorsCount.build();
+				
+			} catch (ReportItemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return metric;
+		
+	}
+	
+	private ReportItem getOwnerCommits(GHRepository remoteRepo) throws MetricException {
+		ReportItem metric = null;
+		
+		GHRepositoryStatistics data = remoteRepo.getStatistics();		
+
+		int commits = 0;
+		try {
+			int tam = data.getParticipation().getOwnerCommits().size();
+			
+			for(int i = 0; i<4; i++) {
+				commits = commits + data.getParticipation().getOwnerCommits().get(tam-i-1);
+			}
+			ReportItemBuilder<Integer> ownerCommitsCount;
+			
+			try {
+				ownerCommitsCount = new ReportItem.ReportItemBuilder<Integer>("OwnerCommits", commits);
+				ownerCommitsCount.description("Número de commits del propietario del repositorio en el último sprint");
+				ownerCommitsCount.unit("commits");
+				metric = ownerCommitsCount.build();
+				
+			} catch (ReportItemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return metric;
+		
+	}
+	
+	private ReportItem getAllCommits(GHRepository remoteRepo) throws MetricException {
+		ReportItem metric = null;
+
+		GHRepositoryStatistics data = remoteRepo.getStatistics();
+		
+		int commits = 0;
+		try {
+			int tam = data.getParticipation().getAllCommits().size();
+			
+			for(int i = 0; i<4; i++) {
+				commits = commits + data.getParticipation().getAllCommits().get(tam-i-1);
+			}
+			ReportItemBuilder<Integer> commitsCount;
+			
+			try {
+				commitsCount = new ReportItem.ReportItemBuilder<Integer>("AllCommits", commits);
+				commitsCount.description("Número de commits totales en el último sprint");
+				commitsCount.unit("commits");
+				metric = commitsCount.build();
+				
+			} catch (ReportItemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return metric;
+		
 	}
 
 }
