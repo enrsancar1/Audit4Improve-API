@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.kohsuke.github.GHIssue;
+import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHRepositoryStatistics;
 import org.kohsuke.github.GHRepositoryStatistics.CodeFrequency;
@@ -172,18 +174,22 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 	/**
 	 * Permite consultar desde fuera una métrica del repositorio indicado
 	 */
+	
+	// Manuel Jerez: Cambio el nombre del segundo parametro de repositoryId a repositoryName,
+	// ya que el método getRepository utiliza el nombre, no el id (numérico) del repositorio
 
 	@Override
-	public ReportItem getMetric(String metricName, String repositoryId) throws MetricException {
+	public ReportItem getMetric(String metricName, String repositoryName) throws MetricException {
 		GHRepository remoteRepo;
 
 		GitHub gb = getConnection();
 		try {
-			remoteRepo = gb.getRepository(repositoryId);
+			
+			remoteRepo = gb.getRepository(repositoryName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MetricException(
-					"No se puede acceder al repositorio remoto " + repositoryId + " para recuperarlo");
+					"No se puede acceder al repositorio remoto " + repositoryName + " para recuperarlo");
 		}
 
 		return getMetric(metricName, remoteRepo);
@@ -212,6 +218,12 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 			break;
 		case "totalDeletions":
 			metric = getTotalDeletions(remoteRepo);
+			break;
+		case "OpenIssues":
+			metric = getOpenIssues(remoteRepo);
+			break;
+		case "ClosedIssues":
+			metric = getClosedIssues(remoteRepo);
 			break;
 		default:
 			throw new MetricException("La métrica " + metricName + " no está definida para un repositorio");
@@ -315,4 +327,45 @@ public class GitHubRepositoryEnquirer extends GitHubEnquirer {
 
 	}
 
+	private ReportItem getOpenIssues(GHRepository remoteRepo) throws MetricException {
+		ReportItem metric = null;
+		try {
+			List<GHIssue> openIssues = remoteRepo.getIssues(GHIssueState.OPEN);
+			Integer count = openIssues.size();
+			try {
+			ReportItemBuilder<Integer> totalDeletions = new ReportItem.ReportItemBuilder<Integer>("OpenIssues",count);
+			totalDeletions.description("Número de Issues abiertos en el proyecto");
+			metric = totalDeletions.build();
+			
+			}
+			catch(ReportItemException e){
+				e.printStackTrace();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return metric;
+	}
+	
+	private ReportItem getClosedIssues(GHRepository remoteRepo) throws MetricException {
+		ReportItem metric = null;
+		try {
+			List<GHIssue> closedIssues = remoteRepo.getIssues(GHIssueState.CLOSED);
+			Integer count = closedIssues.size();
+			try {
+			ReportItemBuilder<Integer> totalDeletions = new ReportItem.ReportItemBuilder<Integer>("ClosedIssues",count);
+			totalDeletions.description("Número de Issues cerrados en el proyecto");
+			metric = totalDeletions.build();
+			
+			}
+			catch(ReportItemException e){
+				e.printStackTrace();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return metric;
+	}
 }

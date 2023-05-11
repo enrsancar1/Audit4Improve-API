@@ -40,6 +40,18 @@
 			"type": "java.util.Date",
 			"description": "Último push realizado en el repositorio",
 			"unit": "date"
+		},
+		{
+			"name": "OpenIssues",
+			"type": "java.lang.Integer",
+			"description": "Número de Issues abiertos en el proyecto",
+			"unit": "OpenIssues"
+		},
+		{
+			"name": "ClosedIssues",
+			"type": "java.lang.Integer",
+			"description": "Número de Issues cerrados en el proyecto",
+			"unit": "ClosedIssues"
 		}
 	],
 	"indicators": [{
