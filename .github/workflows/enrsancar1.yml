@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: actions/first-interaction@v1
         with:
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            :sparkles: Enrique Sanchez :sparkles:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: '# Hola Enrique.'
+          pr-message: ''
